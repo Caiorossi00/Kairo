@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# Kairo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O nome **Kairo** deriva de **kairós** (καιρός), termo da Grécia Antiga que significa  
+**“o momento certo”** ou **momento oportuno**.
 
-Currently, two official plugins are available:
+Para os gregos, *kairós* representava uma ocasião qualitativa e indeterminada no tempo —  
+o instante em que algo especial acontece. Diferente de *khrónos*, que mede o tempo de forma quantitativa e contínua, *kairós* está ligado ao **significado do momento**, não à sua duração.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Na teologia, o termo também é usado para descrever o **“tempo de Deus”**, reforçando a ideia de um tempo vivido, experienciado e carregado de sentido.
 
-## React Compiler
+Essa noção se conecta diretamente com a proposta do Kairo:  
+acompanhar os dias não apenas como datas, mas como **registros de experiências e memórias**.
+**Kairo** é um **tracker visual anual de atividades pessoais** que transforma cada dia do ano em um **mosaico interativo de registros**.  
+A proposta não é apenas marcar hábitos, mas **acompanhar os dias e registrar experiências**, criando um **espaço organizado de memórias ao longo do tempo**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Visão geral
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Cada dia do ano é representado como um bloco em uma grade anual
+- Um dia pode conter múltiplas atividades
+- Cada atividade pode conter descrições e imagens personalizadas
+- Navegação detalhada para visualizar os registros de cada data
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Inspirado em visualizações como o GitHub Contributions, com foco em **registro, memória e navegação temporal**, não em métricas de produtividade.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Funcionalidades
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Grade anual interativa
+- Registro diário de múltiplas atividades
+- Suporte a imagens personalizadas (fotos, posters, prints, ícones)
+- Visualização detalhada por dia
+- Base preparada para filtros e estatísticas
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Proposta do produto
+
+- Visual e pessoal: um espaço de memória, não apenas um checklist
+- Multimodal: texto e imagem por atividade
+- Escalável: pensado para análises e retrospectivas futuras
+
+---
+
+## Stack
+
+- Frontend: React + TypeScript
+- Build: Vite
+- Estilo: CSS / SCSS (sem bibliotecas de UI)
+- Arquitetura: componentes modulares e domínio bem definido
+
+---
+
+## Status do projeto
+
+Em desenvolvimento ativo.  
+Estrutura e funcionalidades ainda estão evoluindo.
+
+---
+
+## Identidade visual
+
+![Kairo Brandboard](https://github.com/Caiorossi00/Kairo/blob/main/src/assets/brandboard.png?raw=true)
