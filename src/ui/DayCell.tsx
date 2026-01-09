@@ -1,25 +1,24 @@
-import { useState } from "react";
 import type { YearDay } from "../domain/year";
 import { DayTooltip } from "./DayTooltip";
 
 interface Props {
   day: YearDay;
+  onClick: () => void;
 }
 
-export function DayCell({ day }: Props) {
-  const [hover, setHover] = useState(false);
-
+export function DayCell({ day, onClick }: Props) {
   return (
     <div
+      className="day-cell"
       style={{
         ...styles.cell,
         background: getColor(day.total),
       }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      aria-label={`${day.date}: ${day.total} atividades`}
+      onClick={onClick}
     >
-      {hover && day.total > 0 && (
-        <div style={styles.tooltipWrapper}>
+      {day.total > 0 && (
+        <div className="tooltip-wrapper">
           <DayTooltip date={day.date} breakdown={day.breakdown} />
         </div>
       )}
@@ -41,11 +40,5 @@ const styles = {
     borderRadius: 3,
     position: "relative" as const,
     cursor: "pointer",
-  },
-  tooltipWrapper: {
-    position: "absolute" as const,
-    top: -8,
-    left: 18,
-    zIndex: 10,
   },
 };
