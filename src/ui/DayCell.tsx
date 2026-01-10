@@ -1,5 +1,5 @@
 import type { YearDay } from "../domain/year";
-import { DayTooltip } from "./DayTooltip";
+import { DayHoverCard } from "./DayHoverCard";
 
 interface Props {
   day: YearDay;
@@ -17,11 +17,9 @@ export function DayCell({ day, onClick }: Props) {
       aria-label={`${day.date}: ${day.total} atividades`}
       onClick={onClick}
     >
-      {day.total > 0 && (
-        <div className="tooltip-wrapper">
-          <DayTooltip date={day.date} breakdown={day.breakdown} />
-        </div>
-      )}
+      <div className="hover-card-wrapper">
+        <DayHoverCard day={day} />
+      </div>
     </div>
   );
 }

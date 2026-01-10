@@ -14,6 +14,7 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
   const [customType, setCustomType] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +31,14 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
       type: finalType,
       title: title.trim() || undefined,
       description: description.trim() || undefined,
+      images: imageUrl.trim() ? [imageUrl.trim()] : undefined,
       timestamp: new Date().toISOString(),
     });
 
     setTitle("");
     setDescription("");
     setCustomType("");
+    setImageUrl("");
   };
 
   const getActivityLabel = (type: string) => {
@@ -67,22 +70,31 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
             <h3>Atividades do dia</h3>
             {day.entries.map((entry) => (
               <div key={entry.id} className="entry-card">
-                <div className="entry-header">
-                  <span className="entry-icon">
-                    {getActivityIcon(entry.type)}
-                  </span>
-                  <span className="entry-type">
-                    {getActivityLabel(entry.type)}
-                  </span>
-                  <button
-                    onClick={() => onDeleteEntry(entry.id)}
-                    className="delete-btn"
-                  >
-                    🗑️
-                  </button>
+                {entry.images && entry.images.length > 0 && (
+                  <img
+                    src={entry.images[0]}
+                    alt={entry.title || ""}
+                    className="entry-card-image"
+                  />
+                )}
+                <div className="entry-card-content">
+                  <div className="entry-header">
+                    <span className="entry-icon">
+                      {getActivityIcon(entry.type)}
+                    </span>
+                    <span className="entry-type">
+                      {getActivityLabel(entry.type)}
+                    </span>
+                    <button
+                      onClick={() => onDeleteEntry(entry.id)}
+                      className="delete-btn"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                  {entry.title && <h4>{entry.title}</h4>}
+                  {entry.description && <p>{entry.description}</p>}
                 </div>
-                {entry.title && <h4>{entry.title}</h4>}
-                {entry.description && <p>{entry.description}</p>}
               </div>
             ))}
           </div>
@@ -130,6 +142,21 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
                   : "ex: Treino de peito"
               }
             />
+          </div>
+
+          <div className="form-group">
+            <label>URL da imagem (opcional)</label>
+            <input
+              type="url"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://example.com/poster.jpg"
+            />
+            {imageUrl && (
+              <div className="image-preview">
+                <img src={imageUrl} alt="Preview" />
+              </div>
+            )}
           </div>
 
           <div className="form-group">
