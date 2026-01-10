@@ -3,21 +3,38 @@ import type { YearDay, ActivityEntry } from "../domain/year";
 import { ACTIVITY_META } from "../domain/activityMeta";
 
 interface Props {
-  day: YearDay;
+  day?: YearDay;
+  selectedDate?: string;
   onClose: () => void;
-  onAddEntry: (entry: Omit<ActivityEntry, "id">) => void;
-  onDeleteEntry: (entryId: string) => void;
+  onAddEntry: (date: string, entry: Omit<ActivityEntry, "id">) => void;
+  onDeleteEntry?: (entryId: string) => void;
 }
 
-export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
+export function DayModal({
+  day,
+  selectedDate,
+  onClose,
+  onAddEntry,
+  onDeleteEntry,
+}: Props) {
   const [activityType, setActivityType] = useState("movie");
   const [customType, setCustomType] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(
+    selectedDate ? new Date(selectedDate + "T00:00:00").getMonth() + 1 : 1
+  );
+  const [selectedDay, setSelectedDay] = useState(
+    selectedDate ? new Date(selectedDate + "T00:00:00").getDate() : 1
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const month = selectedMonth.toString().padStart(2, "0");
+    const dayNum = selectedDay.toString().padStart(2, "0");
+    const chosenDate = `2026-${month}-${dayNum}`;
 
     const finalType =
       activityType === "custom" ? `custom:${customType.trim()}` : activityType;
@@ -27,7 +44,7 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
       return;
     }
 
-    onAddEntry({
+    onAddEntry(chosenDate, {
       type: finalType,
       title: title.trim() || undefined,
       description: description.trim() || undefined,
@@ -39,6 +56,10 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
     setDescription("");
     setCustomType("");
     setImageUrl("");
+
+    if (!day) {
+      onClose();
+    }
   };
 
   const getActivityLabel = (type: string) => {
@@ -55,17 +76,46 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
     return ACTIVITY_META[type]?.icon || "❓";
   };
 
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr + "T00:00:00");
+    return date.toLocaleDateString("pt-BR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      weekday: "long",
+    });
+  };
+
+  const getDaysInMonth = (month: number) => {
+    return new Date(2026, month, 0).getDate();
+  };
+
+  const monthNames = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{day.date}</h2>
+          <h2>{day ? formatDate(day.date) : "Adicionar Atividade"}</h2>
           <button onClick={onClose} className="close-btn">
             ✕
           </button>
         </div>
 
-        {day.entries && day.entries.length > 0 && (
+        {day && day.entries && day.entries.length > 0 && (
           <div className="entries-list">
             <h3>Atividades do dia</h3>
             {day.entries.map((entry) => (
@@ -85,12 +135,14 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
                     <span className="entry-type">
                       {getActivityLabel(entry.type)}
                     </span>
-                    <button
-                      onClick={() => onDeleteEntry(entry.id)}
-                      className="delete-btn"
-                    >
-                      🗑️
-                    </button>
+                    {onDeleteEntry && (
+                      <button
+                        onClick={() => onDeleteEntry(entry.id)}
+                        className="delete-btn"
+                      >
+                        🗑️
+                      </button>
+                    )}
                   </div>
                   {entry.title && <h4>{entry.title}</h4>}
                   {entry.description && <p>{entry.description}</p>}
@@ -101,7 +153,48 @@ export function DayModal({ day, onClose, onAddEntry, onDeleteEntry }: Props) {
         )}
 
         <form onSubmit={handleSubmit} className="add-form">
-          <h3>Adicionar atividade</h3>
+          <h3>{day ? "Adicionar outra atividade" : "Nova atividade"}</h3>
+
+          {!day && (
+            <div className="date-selectors">
+              <div className="form-group">
+                <label>Mês</label>
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => {
+                    setSelectedMonth(Number(e.target.value));
+                    const maxDays = getDaysInMonth(Number(e.target.value));
+                    if (selectedDay > maxDays) {
+                      setSelectedDay(maxDays);
+                    }
+                  }}
+                >
+                  {monthNames.map((name, idx) => (
+                    <option key={idx} value={idx + 1}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Dia</label>
+                <select
+                  value={selectedDay}
+                  onChange={(e) => setSelectedDay(Number(e.target.value))}
+                >
+                  {Array.from(
+                    { length: getDaysInMonth(selectedMonth) },
+                    (_, i) => i + 1
+                  ).map((dayNum) => (
+                    <option key={dayNum} value={dayNum}>
+                      {dayNum}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           <div className="form-group">
             <label>Tipo</label>

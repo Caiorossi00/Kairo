@@ -42,7 +42,6 @@ export function DayHoverCard({ day }: Props) {
         <div className="card-entries">
           {day.entries.map((entry) => (
             <div key={entry.id} className="entry-item">
-              {/* Se tiver imagem, mostra ela */}
               {entry.images && entry.images.length > 0 ? (
                 <div className="entry-with-image">
                   <img

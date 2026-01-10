@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { DayModal } from "./ui/DayModal";
 import { YearGrid } from "./ui/YearGrid";
+import { AddEntryButton } from "./ui/AddEntryButton";
 import { usePersistedYear } from "./hooks/usePersistedYear";
 import { year2026 } from "./mocks/year";
 import type { YearDay, ActivityEntry } from "./domain/year";
-import { useState } from "react";
 
 export default function App() {
   const { days, setDays, resetData } = usePersistedYear(year2026);
   const [selectedDay, setSelectedDay] = useState<YearDay | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const handleAddEntry = (
     dayDate: string,
@@ -23,7 +25,6 @@ export default function App() {
         };
 
         const updatedEntries = [...(day.entries || []), newEntry];
-
         const newBreakdown = { ...day.breakdown };
         newBreakdown[entry.type] = (newBreakdown[entry.type] || 0) + 1;
 
@@ -53,7 +54,6 @@ export default function App() {
 
         const updatedEntries =
           day.entries?.filter((e) => e.id !== entryId) || [];
-
         const newBreakdown = { ...day.breakdown };
         newBreakdown[entryToDelete.type] = Math.max(
           0,
@@ -84,6 +84,11 @@ export default function App() {
     setSelectedDay(currentDay);
   };
 
+  const handleCloseModal = () => {
+    setSelectedDay(null);
+    setShowAddModal(false);
+  };
+
   return (
     <div style={{ padding: 24, background: "#0f0f0f", minHeight: "100vh" }}>
       <div
@@ -91,10 +96,15 @@ export default function App() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 24,
+          marginBottom: 48,
         }}
       >
-        <h2 style={{ color: "#fff", margin: 0 }}>Kairo</h2>
+        <div>
+          <h1 style={{ color: "#fff", margin: 0, fontSize: 32 }}>Kairo</h1>
+          <p style={{ color: "#666", margin: "4px 0 0 0", fontSize: 14 }}>
+            Seu diário visual de 2026
+          </p>
+        </div>
         <button
           onClick={resetData}
           style={{
@@ -113,15 +123,21 @@ export default function App() {
 
       <YearGrid days={days} onDayClick={handleDayClick} />
 
+      <AddEntryButton onClick={() => setShowAddModal(true)} />
+
       {selectedDay && (
         <DayModal
           day={selectedDay}
-          onClose={() => setSelectedDay(null)}
-          onAddEntry={(entry) => handleAddEntry(selectedDay.date, entry)}
+          onClose={handleCloseModal}
+          onAddEntry={(date, entry) => handleAddEntry(date, entry)}
           onDeleteEntry={(entryId) =>
             handleDeleteEntry(selectedDay.date, entryId)
           }
         />
+      )}
+
+      {showAddModal && (
+        <DayModal onClose={handleCloseModal} onAddEntry={handleAddEntry} />
       )}
     </div>
   );
