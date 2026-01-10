@@ -16,15 +16,18 @@
 }
 
 .app-title {
-  color: #fd6c40;
+  color: #ffffff;
   margin: 0;
   font-size: 32px;
+  font-weight: bolder;
+  letter-spacing: -3.4px;
 }
 
 .app-subtitle {
   color: #fe9f5d;
   margin: 0;
   font-size: 14px;
+  letter-spacing: -0.8px;
 }
 
 .reset-button {

@@ -95,7 +95,7 @@ export default function App() {
       <div className="app-header">
         <div className="app-title-section">
           <h1 className="app-title">Kairo</h1>
-          <p className="app-subtitle">Lorem Ipsum</p>
+          <p className="app-subtitle">Se você faz, o Kairo acompanha.</p>
         </div>
         <button onClick={resetData} className="reset-button">
           Resetar dados

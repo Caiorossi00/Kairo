@@ -1,6 +1,5 @@
 import type { YearDay } from "../domain/year";
 
-// Função para gerar todos os dias de 2026
 function generateYear2026(): YearDay[] {
   const days: YearDay[] = [];
   const year = 2026;
@@ -10,7 +9,7 @@ function generateYear2026(): YearDay[] {
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      const dateStr = date.toISOString().split("T")[0];
 
       days.push({
         date: dateStr,
