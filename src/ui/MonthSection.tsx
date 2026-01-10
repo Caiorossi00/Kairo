@@ -1,5 +1,6 @@
 import type { YearDay } from "../domain/year";
 import { DayCell } from "./DayCell";
+import "../assets/style/MonthSection.css";
 
 interface Props {
   monthName: string;

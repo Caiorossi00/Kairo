@@ -1,5 +1,6 @@
 import type { YearDay } from "../domain/year";
 import { DayCell } from "./DayCell";
+import "../assets/style/YearGrid.css";
 
 interface Props {
   days: YearDay[];

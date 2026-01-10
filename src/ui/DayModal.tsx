@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { YearDay, ActivityEntry } from "../domain/year";
 import { ACTIVITY_META } from "../domain/activityMeta";
+import "../assets/style/DayModal.css";
 
 interface Props {
   day?: YearDay;

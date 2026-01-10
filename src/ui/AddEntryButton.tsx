@@ -1,3 +1,4 @@
+import "../assets/style/AddEntryButton.css";
 interface Props {
   onClick: () => void;
 }

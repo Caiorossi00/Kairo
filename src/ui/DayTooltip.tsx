@@ -1,5 +1,6 @@
 import type { Breakdown } from "../domain/breakdown";
 import { ACTIVITY_META } from "../domain/activityMeta";
+import "../assets/style/DayTooltip.css";
 
 interface Props {
   date: string;

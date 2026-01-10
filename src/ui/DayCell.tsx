@@ -1,5 +1,6 @@
 import type { YearDay } from "../domain/year";
 import { DayHoverCard } from "./DayHoverCard";
+import "../assets/style/DayCell.css";
 
 interface Props {
   day: YearDay;

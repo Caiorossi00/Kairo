@@ -1,5 +1,6 @@
 import type { YearDay } from "../domain/year";
 import { MonthSection } from "./MonthSection";
+import "../assets/style/YearView.css";
 
 interface Props {
   days: YearDay[];
@@ -22,7 +23,6 @@ const MONTH_NAMES = [
 ];
 
 export function YearView({ days, onDayClick }: Props) {
-  // Agrupar dias por mês
   const daysByMonth: YearDay[][] = Array.from({ length: 12 }, () => []);
 
   days.forEach((day) => {

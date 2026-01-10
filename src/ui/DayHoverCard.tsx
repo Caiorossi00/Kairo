@@ -1,5 +1,6 @@
 import type { YearDay } from "../domain/year";
 import { ACTIVITY_META } from "../domain/activityMeta";
+import "../assets/style/DayHoverCard.css";
 
 interface Props {
   day: YearDay;
