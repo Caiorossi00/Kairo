@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { YearDay, ActivityEntry } from "../domain/year";
 import { ACTIVITY_META } from "../domain/activityMeta";
+import { MONTH_NAMES } from "../domain/constants";
 import "../assets/style/DayModal.css";
 
 interface Props {
@@ -32,11 +33,9 @@ export function DayModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const month = selectedMonth.toString().padStart(2, "0");
     const dayNum = selectedDay.toString().padStart(2, "0");
     const chosenDate = `2026-${month}-${dayNum}`;
-
     const finalType =
       activityType === "custom" ? `custom:${customType.trim()}` : activityType;
 
@@ -90,21 +89,6 @@ export function DayModal({
   const getDaysInMonth = (month: number) => {
     return new Date(2026, month, 0).getDate();
   };
-
-  const monthNames = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
-  ];
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -170,7 +154,7 @@ export function DayModal({
                     }
                   }}
                 >
-                  {monthNames.map((name, idx) => (
+                  {MONTH_NAMES.map((name, idx) => (
                     <option key={idx} value={idx + 1}>
                       {name}
                     </option>
@@ -232,7 +216,7 @@ export function DayModal({
               onChange={(e) => setTitle(e.target.value)}
               placeholder={
                 activityType === "movie"
-                  ? "ex: Oppenheimer"
+                  ? "ex: Marty Supreme"
                   : "ex: Treino de peito"
               }
             />

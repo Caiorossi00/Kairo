@@ -5,11 +5,11 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #4caf50;
-  color: #fff;
+  background: #fd6c40;
+  color: #ffffff;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 12px rgba(254, 108, 64, 0.4);
   transition: all 0.2s ease;
   z-index: 100;
   display: flex;
@@ -18,9 +18,9 @@
 }
 
 .add-entry-button:hover {
-  background: #66bb6a;
+  background: #fe9f5d;
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.6);
+  box-shadow: 0 6px 16px rgba(254, 108, 64, 0.6);
 }
 
 .add-entry-button:active {
@@ -31,11 +31,4 @@
   font-size: 32px;
   font-weight: 300;
   line-height: 1;
-}
-
-.date-selectors {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
 }

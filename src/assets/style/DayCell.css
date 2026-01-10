@@ -1,0 +1,49 @@
+.day-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.day-cell[data-total="0"] {
+  background: #b1aeae;
+}
+
+.day-cell[data-total="1"],
+.day-cell[data-total="2"] {
+  background: #fec59a;
+}
+
+.day-cell[data-total="3"],
+.day-cell[data-total="4"] {
+  background: #fe9f5d;
+}
+
+.day-cell[data-total="5"],
+.day-cell[data-total="6"],
+.day-cell[data-total="7"],
+.day-cell[data-total="8"],
+.day-cell[data-total="9"] {
+  background: #fd6c40;
+}
+
+.day-cell:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.hover-card-wrapper {
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.day-cell:hover .hover-card-wrapper {
+  opacity: 1;
+}

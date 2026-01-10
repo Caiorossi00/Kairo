@@ -1,0 +1,35 @@
+.tooltip-wrapper {
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.day-cell:hover .tooltip-wrapper {
+  opacity: 1;
+}
+
+.tooltip {
+  background: #000000;
+  border: 1px solid #fd6c40;
+  color: #ffffff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  min-width: 160px;
+}
+
+.tooltip-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0 0;
+}
+
+.tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}

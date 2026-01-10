@@ -5,6 +5,7 @@ import { AddEntryButton } from "./ui/AddEntryButton";
 import { usePersistedYear } from "./hooks/usePersistedYear";
 import { year2026 } from "./mocks/year";
 import type { YearDay, ActivityEntry } from "./domain/year";
+import "./App.css";
 
 export default function App() {
   const { days, setDays, resetData } = usePersistedYear(year2026);
@@ -90,33 +91,13 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: 24, background: "#0f0f0f", minHeight: "100vh" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 48,
-        }}
-      >
-        <div>
-          <h1 style={{ color: "#fff", margin: 0, fontSize: 32 }}>Kairo</h1>
-          <p style={{ color: "#666", margin: "4px 0 0 0", fontSize: 14 }}>
-            Seu diário visual de 2026
-          </p>
+    <div className="app-container">
+      <div className="app-header">
+        <div className="app-title-section">
+          <h1 className="app-title">Kairo</h1>
+          <p className="app-subtitle">Lorem Ipsum</p>
         </div>
-        <button
-          onClick={resetData}
-          style={{
-            padding: "8px 16px",
-            background: "#333",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontSize: 14,
-          }}
-        >
+        <button onClick={resetData} className="reset-button">
           Resetar dados
         </button>
       </div>

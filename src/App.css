@@ -1,0 +1,43 @@
+.app-container {
+  padding: 2em;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.app-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-title {
+  color: #fd6c40;
+  margin: 0;
+  font-size: 32px;
+}
+
+.app-subtitle {
+  color: #fe9f5d;
+  margin: 0;
+  font-size: 14px;
+}
+
+.reset-button {
+  padding: 8px 16px;
+  background: #fd6c40;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.reset-button:hover {
+  background: #fe9f5d;
+}
