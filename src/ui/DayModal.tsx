@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { YearDay, ActivityEntry } from "../domain/year";
 import { ACTIVITY_META } from "../domain/activityMeta";
 import { MONTH_NAMES } from "../domain/constants";
@@ -24,18 +24,27 @@ export function DayModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(
-    selectedDate ? new Date(selectedDate + "T00:00:00").getMonth() + 1 : 1
-  );
-  const [selectedDay, setSelectedDay] = useState(
-    selectedDate ? new Date(selectedDate + "T00:00:00").getDate() : 1
-  );
+
+  const currentDate = day?.date ?? selectedDate;
+
+  const [selectedMonth, setSelectedMonth] = useState<number>(1);
+  const [selectedDay, setSelectedDay] = useState<number>(1);
+
+  useEffect(() => {
+    if (!currentDate) return;
+
+    const [, month, day] = currentDate.split("-").map(Number);
+    setSelectedMonth(month);
+    setSelectedDay(day);
+  }, [currentDate]);
+
+  const getDaysInMonth = (month: number) => {
+    return new Date(2026, month, 0).getDate();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const month = selectedMonth.toString().padStart(2, "0");
-    const dayNum = selectedDay.toString().padStart(2, "0");
-    const chosenDate = `2026-${month}-${dayNum}`;
+
     const finalType =
       activityType === "custom" ? `custom:${customType.trim()}` : activityType;
 
@@ -44,7 +53,13 @@ export function DayModal({
       return;
     }
 
-    onAddEntry(chosenDate, {
+    const dateToUse =
+      currentDate ??
+      `2026-${String(selectedMonth).padStart(2, "0")}-${String(
+        selectedDay
+      ).padStart(2, "0")}`;
+
+    onAddEntry(dateToUse, {
       type: finalType,
       title: title.trim() || undefined,
       description: description.trim() || undefined,
@@ -57,27 +72,13 @@ export function DayModal({
     setCustomType("");
     setImageUrl("");
 
-    if (!day) {
-      onClose();
-    }
-  };
-
-  const getActivityLabel = (type: string) => {
-    if (type.startsWith("custom:")) {
-      return type.replace("custom:", "");
-    }
-    return ACTIVITY_META[type]?.label || type;
-  };
-
-  const getActivityIcon = (type: string) => {
-    if (type.startsWith("custom:")) {
-      return "✍️";
-    }
-    return ACTIVITY_META[type]?.icon || "❓";
+    onClose();
   };
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr + "T00:00:00");
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
     return date.toLocaleDateString("pt-BR", {
       day: "numeric",
       month: "long",
@@ -86,26 +87,32 @@ export function DayModal({
     });
   };
 
-  const getDaysInMonth = (month: number) => {
-    return new Date(2026, month, 0).getDate();
-  };
+  const getActivityLabel = (type: string) =>
+    type.startsWith("custom:")
+      ? type.replace("custom:", "")
+      : ACTIVITY_META[type]?.label ?? type;
+
+  const getActivityIcon = (type: string) =>
+    type.startsWith("custom:") ? "✍️" : ACTIVITY_META[type]?.icon ?? "❓";
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{day ? formatDate(day.date) : "Adicionar Atividade"}</h2>
+          <h2>
+            {currentDate ? formatDate(currentDate) : "Adicionar atividade"}
+          </h2>
           <button onClick={onClose} className="close-btn">
             ✕
           </button>
         </div>
 
-        {day && day.entries && day.entries.length > 0 && (
+        {day?.entries?.length ? (
           <div className="entries-list">
             <h3>Atividades do dia</h3>
             {day.entries.map((entry) => (
               <div key={entry.id} className="entry-card">
-                {entry.images && entry.images.length > 0 && (
+                {entry.images?.length && (
                   <img
                     src={entry.images[0]}
                     alt={entry.title || ""}
@@ -114,16 +121,12 @@ export function DayModal({
                 )}
                 <div className="entry-card-content">
                   <div className="entry-header">
-                    <span className="entry-icon">
-                      {getActivityIcon(entry.type)}
-                    </span>
-                    <span className="entry-type">
-                      {getActivityLabel(entry.type)}
-                    </span>
+                    <span>{getActivityIcon(entry.type)}</span>
+                    <span>{getActivityLabel(entry.type)}</span>
                     {onDeleteEntry && (
                       <button
-                        onClick={() => onDeleteEntry(entry.id)}
                         className="delete-btn"
+                        onClick={() => onDeleteEntry(entry.id)}
                       >
                         🗑️
                       </button>
@@ -135,23 +138,22 @@ export function DayModal({
               </div>
             ))}
           </div>
-        )}
+        ) : null}
 
         <form onSubmit={handleSubmit} className="add-form">
           <h3>{day ? "Adicionar outra atividade" : "Nova atividade"}</h3>
 
-          {!day && (
+          {!currentDate && (
             <div className="date-selectors">
               <div className="form-group">
                 <label>Mês</label>
                 <select
                   value={selectedMonth}
                   onChange={(e) => {
-                    setSelectedMonth(Number(e.target.value));
-                    const maxDays = getDaysInMonth(Number(e.target.value));
-                    if (selectedDay > maxDays) {
-                      setSelectedDay(maxDays);
-                    }
+                    const m = Number(e.target.value);
+                    setSelectedMonth(m);
+                    const max = getDaysInMonth(m);
+                    if (selectedDay > max) setSelectedDay(max);
                   }}
                 >
                   {MONTH_NAMES.map((name, idx) => (
@@ -171,9 +173,9 @@ export function DayModal({
                   {Array.from(
                     { length: getDaysInMonth(selectedMonth) },
                     (_, i) => i + 1
-                  ).map((dayNum) => (
-                    <option key={dayNum} value={dayNum}>
-                      {dayNum}
+                  ).map((d) => (
+                    <option key={d} value={d}>
+                      {d}
                     </option>
                   ))}
                 </select>
@@ -200,50 +202,32 @@ export function DayModal({
             <div className="form-group">
               <label>Nome da atividade</label>
               <input
-                type="text"
                 value={customType}
                 onChange={(e) => setCustomType(e.target.value)}
-                placeholder="ex: freelance, estudo, leitura"
               />
             </div>
           )}
 
           <div className="form-group">
-            <label>Título (opcional)</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={
-                activityType === "movie"
-                  ? "ex: Marty Supreme"
-                  : "ex: Treino de peito"
-              }
-            />
+            <label>Título</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
 
           <div className="form-group">
-            <label>URL da imagem (opcional)</label>
+            <label>URL da imagem</label>
             <input
               type="url"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://example.com/poster.jpg"
             />
-            {imageUrl && (
-              <div className="image-preview">
-                <img src={imageUrl} alt="Preview" />
-              </div>
-            )}
           </div>
 
           <div className="form-group">
-            <label>Descrição (opcional)</label>
+            <label>Descrição</label>
             <textarea
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Adicione detalhes..."
-              rows={3}
             />
           </div>
 

@@ -4,12 +4,13 @@ function generateYear2026(): YearDay[] {
   const days: YearDay[] = [];
   const year = 2026;
 
-  for (let month = 0; month < 12; month++) {
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let month = 1; month <= 12; month++) {
+    const daysInMonth = new Date(year, month, 0).getDate();
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split("T")[0];
+      const monthStr = month.toString().padStart(2, "0");
+      const dayStr = day.toString().padStart(2, "0");
+      const dateStr = `${year}-${monthStr}-${dayStr}`;
 
       days.push({
         date: dateStr,
