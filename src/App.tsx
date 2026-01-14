@@ -2,83 +2,18 @@ import { useState } from "react";
 import { DayModal } from "./ui/DayModal";
 import { YearGrid } from "./ui/YearGrid";
 import { AddEntryButton } from "./ui/AddEntryButton";
-import { usePersistedYear } from "./hooks/usePersistedYear";
-import { year2026 } from "./mocks/year";
-import type { YearDay, ActivityEntry } from "./domain/year";
+import { useDaysFromSupabase } from "./hooks/useDaysFromSupabase";
+import type { YearDay } from "./domain/year";
 import "./App.css";
 
 export default function App() {
-  const { days, setDays, resetData } = usePersistedYear(year2026);
+  const { days, loading, error, addEntry, deleteEntry } = useDaysFromSupabase();
+
   const [selectedDay, setSelectedDay] = useState<YearDay | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const handleAddEntry = (
-    dayDate: string,
-    entry: Omit<ActivityEntry, "id">
-  ) => {
-    setDays((prevDays) =>
-      prevDays.map((day) => {
-        if (day.date !== dayDate) return day;
-
-        const newEntry: ActivityEntry = {
-          ...entry,
-          id: crypto.randomUUID(),
-        };
-
-        const updatedEntries = [...(day.entries || []), newEntry];
-        const newBreakdown = { ...day.breakdown };
-        newBreakdown[entry.type] = (newBreakdown[entry.type] || 0) + 1;
-
-        const updatedDay = {
-          ...day,
-          entries: updatedEntries,
-          total: day.total + 1,
-          breakdown: newBreakdown,
-        };
-
-        if (selectedDay?.date === dayDate) {
-          setSelectedDay(updatedDay);
-        }
-
-        return updatedDay;
-      })
-    );
-  };
-
-  const handleDeleteEntry = (dayDate: string, entryId: string) => {
-    setDays((prevDays) =>
-      prevDays.map((day) => {
-        if (day.date !== dayDate) return day;
-
-        const entryToDelete = day.entries?.find((e) => e.id === entryId);
-        if (!entryToDelete) return day;
-
-        const updatedEntries =
-          day.entries?.filter((e) => e.id !== entryId) || [];
-        const newBreakdown = { ...day.breakdown };
-        newBreakdown[entryToDelete.type] = Math.max(
-          0,
-          (newBreakdown[entryToDelete.type] || 0) - 1
-        );
-        if (newBreakdown[entryToDelete.type] === 0) {
-          delete newBreakdown[entryToDelete.type];
-        }
-
-        const updatedDay = {
-          ...day,
-          entries: updatedEntries,
-          total: Math.max(0, day.total - 1),
-          breakdown: newBreakdown,
-        };
-
-        if (selectedDay?.date === dayDate) {
-          setSelectedDay(updatedDay);
-        }
-
-        return updatedDay;
-      })
-    );
-  };
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    undefined
+  );
 
   const handleDayClick = (day: YearDay) => {
     const currentDay = days.find((d) => d.date === day.date) || day;
@@ -88,7 +23,12 @@ export default function App() {
   const handleCloseModal = () => {
     setSelectedDay(null);
     setShowAddModal(false);
+    setSelectedDate(undefined);
   };
+
+  if (loading) return <div className="app-container">Carregando...</div>;
+  if (error)
+    return <div className="app-container">Erro ao carregar dados: {error}</div>;
 
   return (
     <div className="app-container">
@@ -97,9 +37,6 @@ export default function App() {
           <h1 className="app-title">Kairo</h1>
           <p className="app-subtitle">Se você faz, o Kairo acompanha.</p>
         </div>
-        <button onClick={resetData} className="reset-button">
-          Resetar dados
-        </button>
       </div>
 
       <YearGrid days={days} onDayClick={handleDayClick} />
@@ -109,16 +46,19 @@ export default function App() {
       {selectedDay && (
         <DayModal
           day={selectedDay}
+          selectedDate={selectedDate}
           onClose={handleCloseModal}
-          onAddEntry={(date, entry) => handleAddEntry(date, entry)}
-          onDeleteEntry={(entryId) =>
-            handleDeleteEntry(selectedDay.date, entryId)
-          }
+          onAddEntry={addEntry}
+          onDeleteEntry={deleteEntry}
         />
       )}
 
       {showAddModal && (
-        <DayModal onClose={handleCloseModal} onAddEntry={handleAddEntry} />
+        <DayModal
+          onClose={handleCloseModal}
+          onAddEntry={addEntry}
+          selectedDate={selectedDate}
+        />
       )}
     </div>
   );

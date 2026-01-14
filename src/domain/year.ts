@@ -11,7 +11,7 @@ export interface ActivityEntry {
 
 export interface YearDay {
   date: string;
+  entries: ActivityEntry[];
   total: number;
   breakdown: Breakdown;
-  entries?: ActivityEntry[];
 }
